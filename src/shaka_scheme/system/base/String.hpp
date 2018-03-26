@@ -135,6 +135,8 @@ public:
     return s1.str.compare(s2.str) >= 0;
   }
 
+  char& operator[](std::size_t);
+
   const std::string get_string() const {
     return this->str;
   }
