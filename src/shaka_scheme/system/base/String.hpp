@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cctype>
 #include <algorithm>
+#include "shaka_scheme/system/exceptions/IndexOutOfBoundsException.hpp"
 
 namespace shaka {
 
@@ -54,15 +55,24 @@ public:
 
   // takes the index, and returns the value of the index
   char ref(std::size_t index) const {
-    return str.at(index);
+    if(index > str.size()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
+    return str[index];
   }
 
   // Set the internal string as another's shaka::String's substring
   void substring(const String& other, std::size_t start, std::size_t end) {
+    if(start > other.length() || end > other.length()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     this->str = other.str.substr(start, end-start);
   }
 
   void set(std::size_t index, char a) {
+    if(index > str.size()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     this->str.at(index) = a;
   }
 
@@ -75,10 +85,16 @@ public:
   }
 
   void copy(const String& other, std::size_t start) {
+    if(start > other.length()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     this->str = other.str.substr(start, std::string::npos);
   }
 
   void copy(const String& other, std::size_t start, std::size_t end) {
+    if(start > other.length() || end > other.length()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     this->str = other.str.substr(start, end);
   }
 
@@ -89,27 +105,31 @@ public:
   }
 
   void fill(char fill, std::size_t start) {
+    if(start > str.size()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     for (std::size_t i = start; i < this->str.size(); ++i) {
       this->str.at(i) = fill;
     }
   }
 
   void fill(char fill, std::size_t start, std::size_t end) {
+    if(start > str.size() || end > str.size()) {
+      throw IndexOutOfBoundsException(666,"Index out of bounds: +");
+    }
     for (std::size_t i = start; i < end; ++i) {
       this->str.at(i) = fill;
     }
   }
 
   void upcase() {
-    std::for_each(str.begin(), str.end(), [](char c) {
-      return static_cast<char>(std::toupper(static_cast<int>(c)));
-    });
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) ->
+        unsigned char { return std::toupper(c); });
   }
 
   void downcase() {
-    std::for_each(str.begin(), str.end(), [](char c) {
-      return static_cast<char>(std::tolower(static_cast<int>(c)));
-    });
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) ->
+        unsigned char { return std::tolower(c); });
   }
 
   friend bool operator==(const String& s1, const String& s2) {

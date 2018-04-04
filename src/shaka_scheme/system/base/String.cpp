@@ -1,5 +1,4 @@
 #include "shaka_scheme/system/base/String.hpp"
-#include "shaka_scheme/system/exceptions/IndexOutOfBoundsException.hpp"
 
 namespace shaka {
 
